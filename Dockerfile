@@ -9,5 +9,5 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jdk-alpine
 VOLUME /tmp
 # Pega o .jar gerado na etapa anterior
-COPY --from=build /app/backend/target/*.jar app.jar
+COPY --from=build /programa_rastreamento/backend/target/*.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
