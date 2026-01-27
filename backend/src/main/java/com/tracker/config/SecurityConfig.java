@@ -69,12 +69,18 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Permite o frontend da Vercel e localhost para desenvolvimento
-        configuration.setAllowedOrigins(Arrays.asList(
-                "*"));
+        // IMPORTANTE: Não pode usar "*" com allowCredentials(true)
+        // Use allowedOriginPatterns para wildcards OU liste as origins específicas
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+
+        // Alternativa mais segura (descomente e comente a linha acima):
+        // configuration.setAllowedOrigins(Arrays.asList(
+        // "https://rastreamento-beta.vercel.app",
+        // "http://localhost:5173"
+        // ));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
         configuration.setExposedHeaders(List.of("Authorization"));
 
