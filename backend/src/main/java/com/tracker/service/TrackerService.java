@@ -33,6 +33,7 @@ public class TrackerService {
 
     /**
      * Start a new work session
+     * 
      * @throws IllegalStateException if a session is already active
      */
     public WorkSession startSession(String description) {
@@ -50,6 +51,7 @@ public class TrackerService {
 
     /**
      * Stop the currently active session
+     * 
      * @throws IllegalStateException if no session is active
      */
     public WorkSession stopSession() {
@@ -60,9 +62,6 @@ public class TrackerService {
         return repository.save(activeSession);
     }
 
-    /**
-     * Calculate total hours worked from all completed sessions
-     */
     public double getTotalHoursWorked() {
         return repository.findCompletedSessions().stream()
                 .mapToLong(WorkSession::getDurationSeconds)
