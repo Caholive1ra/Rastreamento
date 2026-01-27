@@ -71,8 +71,7 @@ public class SecurityConfig {
 
         // Permite o frontend da Vercel e localhost para desenvolvimento
         configuration.setAllowedOrigins(Arrays.asList(
-                "https://rastreamento-beta.vercel.app",
-                "http://localhost:5173"));
+                "*"));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
