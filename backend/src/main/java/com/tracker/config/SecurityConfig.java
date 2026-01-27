@@ -52,12 +52,14 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        // Login endpoint - public (no auth required)
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         // POST endpoints (start/stop) - ADMIN only
                         .requestMatchers(HttpMethod.POST, "/api/sessions/**").hasRole("ADMIN")
                         // GET endpoints - ADMIN and CLIENT
                         .requestMatchers(HttpMethod.GET, "/api/sessions/**").hasAnyRole("ADMIN", "CLIENT")
-                        // Auth endpoint - any authenticated user
-                        .requestMatchers("/api/auth/**").authenticated()
+                        // Auth /me endpoint - any authenticated user
+                        .requestMatchers("/api/auth/me").authenticated()
                         // Everything else requires authentication
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults());
