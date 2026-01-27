@@ -1,0 +1,93 @@
+# ==========================
+# IDE & Editors
+# ==========================
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+*.swp
+*.swo
+*~
+
+# ==========================
+# OS Files
+# ==========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==========================
+# Backend - Java / Spring Boot / Maven
+# ==========================
+backend/target/
+backend/*.jar
+backend/*.war
+backend/*.class
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+
+# Logs
+*.log
+logs/
+
+# ==========================
+# Frontend - Node / React / Vite
+# ==========================
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.cache/
+frontend/*.local
+
+# ==========================
+# Environment & Secrets
+# ==========================
+.env
+.env.local
+.env.*.local
+*.env
+application-local.properties
+application-prod.properties
+
+# ==========================
+# Dependencies (root level)
+# ==========================
+node_modules/
+package-lock.json
+
+# ==========================
+# Build outputs
+# ==========================
+*.class
+*.jar
+*.war
+*.ear
+dist/
+build/
+out/
+
+# ==========================
+# Test & Coverage
+# ==========================
+coverage/
+*.lcov
+.nyc_output/
+
+# ==========================
+# Docker
+# ==========================
+# Uncomment if you don't want to track docker volumes
+# docker-volumes/
+
+# ==========================
+# Misc
+# ==========================
+*.bak
+*.tmp
+*.temp
+.cache/
