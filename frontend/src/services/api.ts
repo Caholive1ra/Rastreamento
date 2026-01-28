@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { WorkSession, Stats, StartSessionRequest } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://programa-de-rastreamento.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 const api = axios.create({
     baseURL: API_BASE_URL,
@@ -92,15 +92,16 @@ api.interceptors.response.use(
 export const authApi = {
     /**
      * Login with username and password
+     * POST /api/auth/login
      * Returns user info if successful
      */
     login: async (username: string, password: string): Promise<AuthUser> => {
-        const token = createBasicAuthToken(username, password);
-        const response = await axios.get<AuthUser>(`${API_BASE_URL}/auth/me`, {
-            headers: {
-                Authorization: `Basic ${token}`,
-            },
+        const response = await axios.post<AuthUser>(`${API_BASE_URL}/api/auth/login`, {
+            username,
+            password
         });
+        // Create token for future authenticated requests
+        const token = createBasicAuthToken(username, password);
         // Save auth data on successful login
         setAuthData(token, response.data.role);
         return response.data;
@@ -122,7 +123,7 @@ export const sessionApi = {
      * Get all sessions (history)
      */
     getAllSessions: async (): Promise<WorkSession[]> => {
-        const response = await api.get<WorkSession[]>('/sessions');
+        const response = await api.get<WorkSession[]>('/api/sessions');
         return response.data;
     },
 
@@ -132,7 +133,7 @@ export const sessionApi = {
      */
     getActiveSession: async (): Promise<WorkSession | null> => {
         try {
-            const response = await api.get<WorkSession>('/sessions/active');
+            const response = await api.get<WorkSession>('/api/sessions/active');
             return response.data;
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status === 204) {
@@ -147,7 +148,7 @@ export const sessionApi = {
      */
     startSession: async (description: string): Promise<WorkSession> => {
         const request: StartSessionRequest = { description };
-        const response = await api.post<WorkSession>('/sessions/start', request);
+        const response = await api.post<WorkSession>('/api/sessions/start', request);
         return response.data;
     },
 
@@ -155,7 +156,7 @@ export const sessionApi = {
      * Stop the current active session
      */
     stopSession: async (): Promise<WorkSession> => {
-        const response = await api.post<WorkSession>('/sessions/stop');
+        const response = await api.post<WorkSession>('/api/sessions/stop');
         return response.data;
     },
 
@@ -163,7 +164,7 @@ export const sessionApi = {
      * Get statistics (total hours worked)
      */
     getStats: async (): Promise<Stats> => {
-        const response = await api.get<Stats>('/sessions/stats');
+        const response = await api.get<Stats>('/api/sessions/stats');
         return response.data;
     },
 };

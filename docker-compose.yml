@@ -8,4 +8,24 @@ services:
     environment:
       POSTGRES_DB: gestao-hrs
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: senha123
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-senha_local}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - APP_ADMIN_PASSWORD=${APP_ADMIN_PASSWORD}
+      - APP_CLIENT_PASSWORD=${APP_CLIENT_PASSWORD}
+
+volumes:
+  postgres_data:

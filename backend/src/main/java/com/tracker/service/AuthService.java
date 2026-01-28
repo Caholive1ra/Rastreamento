@@ -25,8 +25,9 @@ public class AuthService {
     public Map<String, Object> authenticate(String username, String password) {
         UserDetails user = userDetailsService.loadUserByUsername(username);
 
-        if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
-            throw new BadCredentialsException("Invalid username or password");
+        // Validate password
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new BadCredentialsException("Invalid credentials");
         }
 
         String role = user.getAuthorities().stream()

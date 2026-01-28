@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -27,7 +28,7 @@ public class AuthController {
                     request.username(),
                     request.password());
             return ResponseEntity.ok(result);
-        } catch (BadCredentialsException e) {
+        } catch (BadCredentialsException | UsernameNotFoundException e) {
             return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials"));
         }
     }

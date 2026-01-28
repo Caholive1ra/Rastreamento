@@ -7,15 +7,13 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,26 +22,12 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Value("${cors.allowed.origins}")
+    private String allowedOrigins;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder encoder) {
-        var admin = User.builder()
-                .username("admin")
-                .password(encoder.encode("password123"))
-                .roles("ADMIN")
-                .build();
-
-        var client = User.builder()
-                .username("client")
-                .password(encoder.encode("client123"))
-                .roles("CLIENT")
-                .build();
-
-        return new InMemoryUserDetailsManager(admin, client);
     }
 
     @Bean
@@ -52,6 +36,8 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        // Preflight OPTIONS requests - always allowed
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // Login endpoint - public (no auth required)
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         // POST endpoints (start/stop) - ADMIN only
@@ -71,18 +57,11 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // IMPORTANTE: Não pode usar "*" com allowCredentials(true)
-        // Use allowedOriginPatterns para wildcards OU liste as origins específicas
-        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
-
-        // Alternativa mais segura (descomente e comente a linha acima):
-        // configuration.setAllowedOrigins(Arrays.asList(
-        // "https://rastreamento-beta.vercel.app",
-        // "http://localhost:5173"
-        // ));
+        // Lista de origens permitidas (usando Patterns porque allowCredentials=true)
+        configuration.setAllowedOriginPatterns(Arrays.asList(allowedOrigins.split(",")));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
         configuration.setAllowCredentials(true);
         configuration.setExposedHeaders(List.of("Authorization"));
 
