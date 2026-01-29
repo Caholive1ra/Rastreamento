@@ -7,7 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class RetainerDashboardApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(RetainerDashboardApplication.class, args);
+        SpringApplication app = new SpringApplication(RetainerDashboardApplication.class);
+        app.setDefaultProperties(java.util.Collections.singletonMap("spring.profiles.default", "local"));
+        app.run(args);
         System.out.println("Application started successfully");
     }
 }
